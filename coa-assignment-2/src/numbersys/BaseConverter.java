@@ -5,7 +5,6 @@
  */
 package numbersys;
 
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -15,15 +14,13 @@ import java.util.Scanner;
  */
 public class BaseConverter {
 
+    private static final String[] doublesTableHeader = {"S/No.", "Decimal Number", "Binary Number", "Remarks"};
+    
     public static void main(String[] args){
-        //startProgram();
-        String[] header = {"TestHeader1", "efef", "dsvdvrevre", "SCDF"};
-        String[][] data = {{"23", "sevcwrvrvrwvrwvrvreverv", "45", "ewfwf"}, {"23", "sev", "45lw", "ewfwlwbcqwcbwqlcbf"}, {"2ldibasd3", "rv", "45smusvku", "ewfwfAKSUGAK"}, {"23", "sev", "45qwcqwcwqcwqcqw", "e"}};
-        CLITable cliTable = new CLITable(header, data);
-        cliTable.render();
+        startProgram();
     }
     
-    public void startProgram(){
+    public static void startProgram(){
         while(true){
             printInstructions();
             Scanner scanner = new Scanner(System.in);
@@ -31,22 +28,57 @@ public class BaseConverter {
             String input = scanner.nextLine();
             switch(input){
                 case "a":
+                    renderStatictable();
                     break;
                 case "b":
+                    renderDynamicTable();
                     break;
                 case "q":
                     System.exit(0);
                 default:
                     try {
                         double num = Double.parseDouble(input);
-                        String result = convert(num, 2);
-                        System.out.println("ans:" + result);
+                        if(isInteger(num)){
+                            String result = convert((int) num, 2);
+                            System.out.println(num + " [10] => " + result + " [2]");
+                        }else{
+                            String[] result = convert(num, 2);
+                            System.out.println(num + " [10] => " + result[0] + " [2]" + " @" + result[1]);
+                        }
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid input.");
                     }
                     break;
             }
         }
+    }
+    
+    public static void renderStatictable(){
+        String[] header = {"Decimal (base 10)", "Binary (base 2)", "Hexadecimal(base 16)"};
+        String[][] data = new String[23][3];
+        for (int i = 0; i < 19; i++) {
+            String[] row = {Integer.toString(i), convert(i, 2), convert(i, 16)};
+            data[i] = row;
+        }
+        int[] otherNums = {31, 100, 255, 256};
+        for (int i = 0; i < otherNums.length; i++) {
+            String[] row = {Integer.toString(otherNums[i]), convert(otherNums[i], 2), convert(otherNums[i], 16)};
+            data[i + 19] = row;
+        }
+        CLITable cLITable = new CLITable(header, data);
+        cLITable.render();
+    }
+    
+    public static void renderDynamicTable(){
+       String[][] data = new String[30][4];
+       double[] randomDoubles = genRandom();
+       for(int i = 0; i < randomDoubles.length; i++){
+           String[] result = convert(randomDoubles[i], 2);
+           String[] row = {Integer.toString(i + 1), Double.toString(randomDoubles[i]), result[0], result[1]};
+           data[i] = row;
+       }
+       CLITable cLITable = new CLITable(doublesTableHeader, data);
+       cLITable.render();
     }
     
     public static String convert(int num, int toBase){
@@ -75,15 +107,22 @@ public class BaseConverter {
                 return Integer.toString(num);
         }
     }
-    public static String convert(double num, int toBase){
+    
+    public static String[] convert(double num, int toBase){
        int integralPart = (int) Math.floor(num);
        double fractionPart = num - integralPart;
        String beforeRadix = convert(integralPart, toBase);
        String afterRadix  = convertFraction(fractionPart);
+       String remark = "Exact";
        if(afterRadix.length() > 5){
+           remark = "Approximate";
            afterRadix = afterRadix.substring(0, 5);
        }
-       return beforeRadix + "." + afterRadix; 
+       return new String[]{beforeRadix + "." + afterRadix, remark}; 
+    }
+    
+    public static boolean isInteger(double num){
+        return num - (int) Math.floor(num) == 0;
     }
     
     public static String convertFraction(double fraction){
