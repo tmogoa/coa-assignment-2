@@ -10,7 +10,10 @@ import java.util.Scanner;
 
 /**
  *
- * @author tony
+ * @author tony mogoa
+ * 
+ * Main class than runs the program.
+ * It contain methods for number system conversion.
  */
 public class BaseConverter {
 
@@ -65,7 +68,7 @@ public class BaseConverter {
             String[] row = {Integer.toString(otherNums[i]), convert(otherNums[i], 2), convert(otherNums[i], 16)};
             data[i + 19] = row;
         }
-        CLITable cLITable = new CLITable(header, data);
+        CLITable cLITable = new CLITable(header, data, true);
         cLITable.render();
     }
     
@@ -77,18 +80,44 @@ public class BaseConverter {
            String[] row = {Integer.toString(i + 1), Double.toString(randomDoubles[i]), result[0], result[1]};
            data[i] = row;
        }
-       CLITable cLITable = new CLITable(doublesTableHeader, data);
+       CLITable cLITable = new CLITable(doublesTableHeader, data, true);
        cLITable.render();
     }
     
     public static String convert(int num, int toBase){
-       if(num == 0){
+       return format(calc(num, toBase), toBase);
+    }
+    
+    public static String calc(int num, int toBase){
+        if(num == 0){
            return "";
        }else{
-           return convert(num / toBase, toBase) + "" + toSingleSymbol(num % toBase);
+           return calc(num / toBase, toBase) + "" + toSingleSymbol(num % toBase);
        } 
     }
     
+    public static String format(String num, int base){
+        String formattedNum = "";
+        if(num.equals("")){
+            return base == 2 ? "0000" : "0";
+        }else if(base == 2){
+            for (int i = 0; i < num.length(); i++) {
+                //System.out.println(num);
+                if((i + 1) % 4 == 0 && num.length() != i + 1){
+                    formattedNum = " " + num.charAt(num.length() - 1 - i) + formattedNum;
+                }else{
+                    formattedNum = Character.toString(num.charAt(num.length() - 1 - i)) + formattedNum;
+                }
+            }
+            int numPaddingZeros = 4 - (num.length() % 4);
+            for (int i = 0; i < numPaddingZeros && num.length() % 4 > 0; i++) {
+                formattedNum = "0" + formattedNum;
+            }
+            return formattedNum;
+        }else{
+            return num;
+        }
+    }
     public static String toSingleSymbol(int num){
         switch(num){
             case 10:
