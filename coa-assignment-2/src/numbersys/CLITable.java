@@ -7,17 +7,27 @@ package numbersys;
 
 /**
  *
- * @author tony
+ * @author tony mogoa
+ * 
+ * This class allows you to render a table.
+ * To render a table:
+ *  1. Pass the table header(array), table data(2d-array) and alignment to the constructor
+ *  2. Call the render() function.
+ * 
+ * For the alignment pass `true` to get right-alignment and `false` 
  */
 public class CLITable {
     
     private String[] header;
     private String[][] data;
     private int[] columnLengths;
+    private int tableLength = 1;
+    private boolean alignRight = true;
     
-    public CLITable(String[] header, String[][] data){
+    public CLITable(String[] header, String[][] data, boolean alignRight){
         this.header = header;
         this.data = data;
+        this.alignRight = alignRight;
         calculateColumnLengths();
     }
     
@@ -40,15 +50,21 @@ public class CLITable {
     }
     
     public void renderHeader(){
-        int tableLength = 1;
+        tableLength = 1;
         System.out.print("|");
         for (int i = 0; i < header.length; i++) {
             String stringToRender = " " + header[i];
             tableLength += stringToRender.length();
-            System.out.print(stringToRender);
+        
+            if(!alignRight){
+                System.out.print(stringToRender);
+            }
             for (int j = 0; j <= columnLengths[i] - header[i].length(); j++) {
                 System.out.print(" ");
                 tableLength++;
+            }
+            if(alignRight){
+               System.out.print(stringToRender);
             }
             System.out.print("|");
             tableLength++;
@@ -61,15 +77,23 @@ public class CLITable {
     }
     
     public void renderData(){
-        //System.out.println("rows: " + data.length);
         for (int i = 0; i < data.length; i++) {
             System.out.print("|");
             for (int j = 0; j < data[0].length; j++) {
-                System.out.print(" " + data[i][j]);
+                if(!alignRight){
+                    System.out.print(" " + data[i][j]);
+                }
                 for (int k = 0; k <= columnLengths[j] - data[i][j].length(); k++) {
                     System.out.print(" ");
                 }
+                if(alignRight){
+                    System.out.print(" " + data[i][j]);
+                }
                 System.out.print("|");
+            }
+            System.out.print("\n");
+            for (int l = 0; l < tableLength; l++) {
+                System.out.print("-");
             }
             System.out.print("\n");
         }
