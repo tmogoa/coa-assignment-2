@@ -14,24 +14,24 @@ package numbersys;
  *  1. Pass the table header(array), table data(2d-array) and alignment to the constructor
  *  2. Call the render() function.
  * 
- * For the alignment pass `true` to get right-alignment and `false` 
+ * For the alignment pass `Alignment.RIGHT` to get right-alignment and `Alignment.LEFT` for left-alignment 
  */
 public class CLITable {
     
-    private String[] header;
-    private String[][] data;
+    private final String[] header;
+    private final String[][] data;
     private int[] columnLengths;
     private int tableLength = 1;
-    private boolean alignRight = true;
+    private final Alignment alignment;
     
-    public CLITable(String[] header, String[][] data, boolean alignRight){
+    public CLITable(String[] header, String[][] data, Alignment alignment){
         this.header = header;
         this.data = data;
-        this.alignRight = alignRight;
+        this.alignment = alignment;
         calculateColumnLengths();
     }
     
-    public void calculateColumnLengths(){
+    private void calculateColumnLengths(){
         columnLengths = new int[header.length];
         for (int i = 0; i < data[0].length; i++) {
             int maxColumnLength = header[i].length();
@@ -56,14 +56,14 @@ public class CLITable {
             String stringToRender = " " + header[i];
             tableLength += stringToRender.length();
         
-            if(!alignRight){
+            if(alignment == Alignment.LEFT){
                 System.out.print(stringToRender);
             }
             for (int j = 0; j <= columnLengths[i] - header[i].length(); j++) {
                 System.out.print(" ");
                 tableLength++;
             }
-            if(alignRight){
+            if(alignment == Alignment.RIGHT){
                System.out.print(stringToRender);
             }
             System.out.print("|");
@@ -80,13 +80,13 @@ public class CLITable {
         for (int i = 0; i < data.length; i++) {
             System.out.print("|");
             for (int j = 0; j < data[0].length; j++) {
-                if(!alignRight){
+                if(alignment == Alignment.LEFT){
                     System.out.print(" " + data[i][j]);
                 }
                 for (int k = 0; k <= columnLengths[j] - data[i][j].length(); k++) {
                     System.out.print(" ");
                 }
-                if(alignRight){
+                if(alignment == Alignment.RIGHT){
                     System.out.print(" " + data[i][j]);
                 }
                 System.out.print("|");
