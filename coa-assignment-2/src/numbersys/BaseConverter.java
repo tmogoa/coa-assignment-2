@@ -68,7 +68,7 @@ public class BaseConverter {
             String[] row = {Integer.toString(otherNums[i]), convert(otherNums[i], 2), convert(otherNums[i], 16)};
             data[i + 19] = row;
         }
-        CLITable cLITable = new CLITable(header, data, true);
+        CLITable cLITable = new CLITable(header, data, Alignment.RIGHT);
         cLITable.render();
     }
     
@@ -80,7 +80,7 @@ public class BaseConverter {
            String[] row = {Integer.toString(i + 1), Double.toString(randomDoubles[i]), result[0], result[1]};
            data[i] = row;
        }
-       CLITable cLITable = new CLITable(doublesTableHeader, data, true);
+       CLITable cLITable = new CLITable(doublesTableHeader, data, Alignment.RIGHT);
        cLITable.render();
     }
     
@@ -94,6 +94,16 @@ public class BaseConverter {
        }else{
            return calc(num / toBase, toBase) + "" + toSingleSymbol(num % toBase);
        } 
+    }
+    
+    public void calcIterative(int num){
+        int value = num;
+        String output = "";
+        while(value > 0){
+            int bit = value % 2;
+            value = value / 2;
+            output = bit + output;
+        }
     }
     
     public static String format(String num, int base){
