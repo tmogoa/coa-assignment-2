@@ -23,6 +23,13 @@ public class BaseConverter {
         startProgram();
     }
     
+    public static void test(){
+        final String[] header = {"Column 0", "Column 1", "Column 2", "Column 3"};
+       final String[][] data = {{"Cell [0][0]", "Cell [0][1]", "Cell [0][2]", "Cell [0][3]"}, {"Cell [1][0]", "Cell [1][1]", "Cell [1][2]", "Cell [1][3]"}};
+       Table table = new Table(header, data, Alignment.RIGHT);
+       table.render();
+    }
+    
     public static void startProgram(){
         while(true){
             printInstructions();
@@ -68,7 +75,7 @@ public class BaseConverter {
             String[] row = {Integer.toString(otherNums[i]), convert(otherNums[i], 2), convert(otherNums[i], 16)};
             data[i + 19] = row;
         }
-        CLITable cLITable = new CLITable(header, data, Alignment.RIGHT);
+        Table cLITable = new Table(header, data, Alignment.RIGHT);
         cLITable.render();
     }
     
@@ -80,7 +87,7 @@ public class BaseConverter {
            String[] row = {Integer.toString(i + 1), Double.toString(randomDoubles[i]), result[0], result[1]};
            data[i] = row;
        }
-       CLITable cLITable = new CLITable(doublesTableHeader, data, Alignment.RIGHT);
+       Table cLITable = new Table(doublesTableHeader, data, Alignment.RIGHT);
        cLITable.render();
     }
     
